@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset Fabio:V2023_01_11_00_18_01 (dbms:postgresql)
+--changeset Fabio:V2023_01_11_00_18_01 (dbms:postgresql,h2)
 
 CREATE TABLE COMPANIES(
     id serial primary key,
@@ -17,7 +17,7 @@ insert into COMPANIES (id, name) values (8, 'Smitham and Sons');
 insert into COMPANIES (id, name) values (9, 'Spencer, Yundt and Jacobi');
 insert into COMPANIES (id, name) values (10, 'Leannon, Gulgowski and Wilderman');
 
---changeset Fabio:V2023_01_11_00_18_02 (dbms:postgresql)
+--changeset Fabio:V2023_01_11_00_18_02 (dbms:postgresql, h2)
 
 CREATE TABLE EMPLOYEES(
   id serial primary key,
