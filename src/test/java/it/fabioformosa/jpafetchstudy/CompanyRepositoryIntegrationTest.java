@@ -13,7 +13,7 @@ import org.springframework.data.domain.*;
 import javax.persistence.EntityManager;
 
 @SpringBootTest
-class JpaFetchStudyApplicationTests extends AbstractPostgresqlContainerTestSuite{
+class CompanyRepositoryIntegrationTest extends AbstractPostgresqlContainerTestSuite{
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -22,11 +22,7 @@ class JpaFetchStudyApplicationTests extends AbstractPostgresqlContainerTestSuite
     private EntityManager entityManager;
 
     @Test
-    void given10Companies_whenAPageOf5IsFetched_thenTheQueryCounterShouldBe2() {
-        //1 Wisoky and Sons => 102 employees
-        //2 Larkin and Sons => 89 employees
-        //3 Ondricka-Yundt => 93 employees
-
+    void given10Companies_whenTheFirstPageOfIsFetched_thenTheQueryCounterShouldBe2() {
         Page<Company> companyPage = companyRepository.findAll(PageRequest.of(0, 5, Sort.by("id")));
         Assertions.assertThat(companyPage.getTotalElements()).isEqualTo(10);
         Assertions.assertThat(companyPage.getContent()).hasSize(5);
