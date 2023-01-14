@@ -8,15 +8,28 @@
         <version>2.7.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>it.fabioformosa</groupId>
     <artifactId>jpa-fetch-study</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <name>jpa-fetch-study</name>
     <description>jpa-fetch-study</description>
+
+    <developers>
+        <developer>
+            <id>fabio.formosa</id>
+            <name>Fabio Formosa</name>
+        </developer>
+    </developers>
+
     <properties>
         <java.version>17</java.version>
         <testcontainers.version>1.17.6</testcontainers.version>
+        <io.hypersistence.version>3.1.1</io.hypersistence.version>
+        <datasource-proxy.version>1.8.1</datasource-proxy.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,6 +50,19 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- Performance Monitoring Utils -->
+        <dependency>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-utils-hibernate-55</artifactId>
+            <version>${io.hypersistence.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.ttddyy</groupId>
+            <artifactId>datasource-proxy</artifactId>
+            <version>${datasource-proxy.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -67,6 +93,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
     <dependencyManagement>
         <dependencies>
             <dependency>

@@ -21,15 +21,20 @@ public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite 
 
     @Test
     void given10Companies_whenTheFirstPageOfIsFetched_thenTheQueryCounterShouldBe2(){
-        PaginatedListDto<CompanyDto> companyDtoList = companyService.list(0, 5);
-
-        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(10);
-        Assertions.assertThat(companyDtoList.getItems()).hasSize(5);
-        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(2);
-
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
+        statistics.clear();
+
+        int pageSize = 5;
+        PaginatedListDto<CompanyDto> companyDtoList = companyService.list(0, pageSize);
+
+        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(10);
+        Assertions.assertThat(companyDtoList.getItems()).hasSize(pageSize);
+        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(2);
+
+
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(pageSize);
     }
 
 }

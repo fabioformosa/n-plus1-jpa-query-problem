@@ -13,10 +13,10 @@ import java.util.Arrays;
 /**
  * It launches a postgresql testcontainer if the spring active profile is "postgresql"
  * otherwise it configures a h2-based datasource (make sure to import to h2 dependency)
- *      <dependency>
- *         <groupId>com.h2database</groupId>
- *         <artifactId>h2</artifactId>
- *       </dependency>
+ * <dependency>
+ * <groupId>com.h2database</groupId>
+ * <artifactId>h2</artifactId>
+ * </dependency>
  */
 @SpringBootTest
 @ContextConfiguration(initializers = {AbstractIntegrationTestSuite.Initializer.class})
@@ -60,6 +60,7 @@ abstract public class AbstractIntegrationTestSuite {
                     "spring.datasource.password=sa"
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
+
 
     }
 }
