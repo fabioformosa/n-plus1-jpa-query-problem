@@ -13,7 +13,7 @@ import org.springframework.data.domain.*;
 import javax.persistence.EntityManager;
 
 @SpringBootTest
-class CompanyRepositoryIntegrationTest extends AbstractPostgresqlContainerTestSuite{
+class CompanyRepositoryIntegrationTest extends AbstractIntegrationTestSuite {
 
     @Autowired
     private CompanyRepository companyRepository;

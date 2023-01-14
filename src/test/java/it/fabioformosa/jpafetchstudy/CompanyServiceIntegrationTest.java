@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 
-public class CompanyServiceIntegrationTest extends AbstractPostgresqlContainerTestSuite{
+public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite {
 
     @Autowired
     private CompanyService companyService;
