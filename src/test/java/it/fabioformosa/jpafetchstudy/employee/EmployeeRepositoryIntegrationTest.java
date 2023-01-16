@@ -22,8 +22,13 @@ public class EmployeeRepositoryIntegrationTest extends AbstractIntegrationTestSu
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * By default the ManyToOne association has defined with a fetchType=Eager
+     * If the query doesn't specify explicitely a fetch, the associated entity is fetched with an extra query for each
+     * element of the returned colletion
+     */
     @Test
-    void given1000EmployeesWithAssociatedCompanies_whenTheFetchTypeIsEager_thenTheQueryCounterShouldBe2() {
+    void given1000EmployeesWithAssociatedCompanies_whenTheFetchTypeIsEager_thenTheNPlus1QueryProblemIsPresent() {
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();
@@ -34,7 +39,12 @@ public class EmployeeRepositoryIntegrationTest extends AbstractIntegrationTestSu
         Assertions.assertThat(paginatedEmployeeList.getContent()).hasSize(pageSize);
         Assertions.assertThat(paginatedEmployeeList.getTotalPages()).isEqualTo(200);
 
+        //Assert the association is eager
+        Assertions.assertThat(paginatedEmployeeList.getContent().get(0).getCompany()).isNotNull();
+
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
-        Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(0);
+
+        // !!! n+1 query problem !!!
+        Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(pageSize);
     }
 }

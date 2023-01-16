@@ -20,6 +20,11 @@ class EmployeeServiceIntegrationTest extends AbstractIntegrationTestSuite {
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * By default the ManyToOne association has defined with a fetchType=Eager
+     * If the query doesn't specify explicitely a fetch, the associated entity is fetched with an extra query for each
+     * element of the returned colletion
+     */
     @Test
     void given1000EmployeesWithAssociatedCompanies_whenTheFetchTypeIsEager_thenNPlus1ProblemIsPresent(){
         Session session = entityManager.unwrap(Session.class);

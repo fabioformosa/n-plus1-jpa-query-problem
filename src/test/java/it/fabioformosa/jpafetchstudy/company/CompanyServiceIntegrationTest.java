@@ -20,6 +20,12 @@ public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite 
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * By default the OneToMany association has defined with a fetchType=Lazy
+     * Since in the service we iterate over the companies and we access to the related nested collection of employees
+     * to convert into Dtos.
+     * If we forget to specify explicitely a fetch join in the query, an extra query is done for each company to load the associated employees
+     */
     @Test
     void givenCompaniesWithAssociationEmployees_whenTheFetchTypeIsLazy_thenTheNPlus1QueryProblemIsPresent(){
         Session session = entityManager.unwrap(Session.class);

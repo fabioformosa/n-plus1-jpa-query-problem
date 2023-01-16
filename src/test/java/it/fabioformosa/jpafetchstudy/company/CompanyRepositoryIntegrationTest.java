@@ -23,6 +23,10 @@ class CompanyRepositoryIntegrationTest extends AbstractIntegrationTestSuite {
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * By default the OneToMany association has defined with a fetchType=Lazy
+     * If we don't access to the nested collection, no extra query are run
+     */
     @Test
     void givenCompaniesWithAssociatedEmployees_whenTheFetchTypeIsLazy_thenTheQueryCounterShouldBe2() {
         Session session = entityManager.unwrap(Session.class);
