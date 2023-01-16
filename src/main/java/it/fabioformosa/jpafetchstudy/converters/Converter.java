@@ -28,7 +28,7 @@ public class Converter {
                 .build();
     }
 
-    private static EmployeeDto fromEmployeeToEmployeeDto(Employee employee) {
+    public static EmployeeDto fromEmployeeToEmployeeDto(Employee employee) {
         return EmployeeDto.builder()
                 .id(employee.getId())
                 .lastname(employee.getLastname())

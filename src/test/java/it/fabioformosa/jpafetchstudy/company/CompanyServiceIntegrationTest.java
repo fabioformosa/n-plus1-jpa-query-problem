@@ -1,5 +1,6 @@
-package it.fabioformosa.jpafetchstudy;
+package it.fabioformosa.jpafetchstudy.company;
 
+import it.fabioformosa.jpafetchstudy.AbstractIntegrationTestSuite;
 import it.fabioformosa.jpafetchstudy.dtos.CompanyDto;
 import it.fabioformosa.jpafetchstudy.dtos.PaginatedListDto;
 import it.fabioformosa.jpafetchstudy.services.CompanyService;
@@ -20,7 +21,7 @@ public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite 
     private EntityManager entityManager;
 
     @Test
-    void given10Companies_whenTheFirstPageOfIsFetched_thenTheQueryCounterShouldBe2(){
+    void given10Companies_whenTheFetchTypeIsEager_thenTheQueryCounterShouldBe2(){
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();
