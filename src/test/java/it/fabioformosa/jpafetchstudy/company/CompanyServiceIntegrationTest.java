@@ -21,7 +21,7 @@ public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite 
     private EntityManager entityManager;
 
     @Test
-    void given10Companies_whenTheFetchTypeIsEager_thenTheQueryCounterShouldBe2(){
+    void givenCompaniesWithAssociationEmployees_whenTheFetchTypeIsLazy_thenTheNPlus1QueryProblemIsPresent(){
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();
@@ -35,6 +35,8 @@ public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite 
 
 
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+
+        // !!! n+1 query problem !!!
         Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(pageSize);
     }
 

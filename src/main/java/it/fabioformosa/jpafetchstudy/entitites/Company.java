@@ -1,6 +1,7 @@
 package it.fabioformosa.jpafetchstudy.entitites;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ public class Company {
 
     private String name;
 
+    //Collections are lazy fetched by default
     @OneToMany(mappedBy="company")
     private List<Employee> employees;
 }

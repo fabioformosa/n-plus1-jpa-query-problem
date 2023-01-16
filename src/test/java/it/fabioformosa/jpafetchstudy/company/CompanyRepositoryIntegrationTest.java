@@ -24,7 +24,7 @@ class CompanyRepositoryIntegrationTest extends AbstractIntegrationTestSuite {
     private EntityManager entityManager;
 
     @Test
-    void given10Companies_whenTheFirstPageOfIsFetched_thenTheQueryCounterShouldBe2() {
+    void givenCompaniesWithAssociatedEmployees_whenTheFetchTypeIsLazy_thenTheQueryCounterShouldBe2() {
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();

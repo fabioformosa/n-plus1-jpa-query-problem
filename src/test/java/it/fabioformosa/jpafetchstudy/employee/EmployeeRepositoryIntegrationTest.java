@@ -23,7 +23,7 @@ public class EmployeeRepositoryIntegrationTest extends AbstractIntegrationTestSu
     private EntityManager entityManager;
 
     @Test
-    void given1000Employees_whenTheFirstPageOfIsFetched_thenTheQueryCounterShouldBe2() {
+    void given1000EmployeesWithAssociatedCompanies_whenTheFetchTypeIsEager_thenTheQueryCounterShouldBe2() {
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();

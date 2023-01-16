@@ -21,7 +21,7 @@ class EmployeeServiceIntegrationTest extends AbstractIntegrationTestSuite {
     private EntityManager entityManager;
 
     @Test
-    void given1000Employees_whenTheFetchTypeIsEager_thenNPlus1ProblemIsPresent(){
+    void given1000EmployeesWithAssociatedCompanies_whenTheFetchTypeIsEager_thenNPlus1ProblemIsPresent(){
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();
@@ -32,8 +32,9 @@ class EmployeeServiceIntegrationTest extends AbstractIntegrationTestSuite {
         Assertions.assertThat(employeePage.getItems()).hasSize(5);
         Assertions.assertThat(employeePage.getTotalPages()).isEqualTo(200);
 
-        //n+1 problem!
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+
+        // !!! n+1 query problem !!!
         Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(pageSize);
     }
 
