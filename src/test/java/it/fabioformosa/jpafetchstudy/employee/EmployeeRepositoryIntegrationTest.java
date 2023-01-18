@@ -3,6 +3,7 @@ package it.fabioformosa.jpafetchstudy.employee;
 import it.fabioformosa.jpafetchstudy.AbstractIntegrationTestSuite;
 import it.fabioformosa.jpafetchstudy.entitites.Employee;
 import it.fabioformosa.jpafetchstudy.repositories.EmployeeRepository;
+import it.fabioformosa.jpafetchstudy.services.EmployeeService;
 import org.assertj.core.api.Assertions;
 import org.hibernate.Session;
 import org.hibernate.stat.Statistics;
@@ -14,6 +15,10 @@ import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManager;
 
+/**
+ * The ManyToOne association is affected by the n+1 query problem even thought the FetchType is Eager by default
+ * The solution is to apply the join fetch to the associated entity also
+ */
 public class EmployeeRepositoryIntegrationTest extends AbstractIntegrationTestSuite {
 
     @Autowired
@@ -23,12 +28,11 @@ public class EmployeeRepositoryIntegrationTest extends AbstractIntegrationTestSu
     private EntityManager entityManager;
 
     /**
-     * By default the ManyToOne association has defined with a fetchType=Eager
-     * If the query doesn't specify explicitely a fetch, the associated entity is fetched with an extra query for each
-     * element of the returned colletion
+     * By default, All ManyToOne associations are defined with fetchType=Eager
+     * If the query doesn't specify explicitly a "join fetch", the associated entity is fetched performing an extra query
      */
     @Test
-    void given1000EmployeesWithAssociatedCompanies_whenTheFetchTypeIsEager_thenTheNPlus1QueryProblemIsPresent() {
+    void givenEmployeesWithAManyToOneAssociationWithCompanies_whenTheFetchTypeIsEager_thenTheNPlus1QueryProblemIsPresent() {
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();
@@ -47,4 +51,32 @@ public class EmployeeRepositoryIntegrationTest extends AbstractIntegrationTestSu
         // !!! n+1 query problem !!!
         Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(pageSize);
     }
+
+    /**
+     * The solution, to the problem explained above, is to explicitly define "join fetch" in the query.
+     * Since the "join fetch" is needed, it's highly recommended to switch the FetchType to lazy in a way such that
+     * we don't want fetch with a join immediately, the extra query is performed only when the associated entity is
+     * actually used within a transaction
+     */
+    @Test
+    void givenEmployeesWithAManyToOneAssociationWithCompanies_whenTheQueryHasAJoinWithFetch_thenTheNPlus1QueryProblemIsNotPresent(){
+        Session session = entityManager.unwrap(Session.class);
+        Statistics statistics = session.getSessionFactory().getStatistics();
+        statistics.clear();
+
+        int pageSize = 5;
+        Page<Employee> paginatedEmployeeList = employeeRepository.findAll(EmployeeService.fetchCompanySpecification(), PageRequest.of(0, pageSize, Sort.by("id")));
+        Assertions.assertThat(paginatedEmployeeList.getTotalElements()).isEqualTo(1000);
+        Assertions.assertThat(paginatedEmployeeList.getContent()).hasSize(pageSize);
+        Assertions.assertThat(paginatedEmployeeList.getTotalPages()).isEqualTo(200);
+
+        //Assert the association is eager
+        Assertions.assertThat(paginatedEmployeeList.getContent().get(0).getCompany()).isNotNull();
+
+        Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+
+        // OK: n+1 query problem not present
+        Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(0);
+    }
+
 }
