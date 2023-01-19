@@ -44,7 +44,7 @@ class EmployeeServiceIntegrationTest extends AbstractIntegrationTestSuite {
     }
 
     /**
-     *
+     * Specifying a join fetch into the query, the problem explained above is solved!
      */
     @Test
     void given1000EmployeesWithAssociatedCompanies_whenTheQueryFetchesExplicitly_thenNPlus1ProblemIsNotPresent(){
@@ -58,8 +58,49 @@ class EmployeeServiceIntegrationTest extends AbstractIntegrationTestSuite {
         Assertions.assertThat(employeePage.getItems()).hasSize(5);
         Assertions.assertThat(employeePage.getTotalPages()).isEqualTo(200);
 
+        // OK: n+1 query problem not present
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(0);
+    }
 
+
+    /**
+     * Specifying a join fetch into the query (e.g. via specification), the problem explained above is solved!
+     */
+    @Test
+    void given1000EmployeesWithAssociatedCompanies_whenTheQueryFetchesExplicitlyViaSpecification_thenNPlus1ProblemIsNotPresent(){
+        Session session = entityManager.unwrap(Session.class);
+        Statistics statistics = session.getSessionFactory().getStatistics();
+        statistics.clear();
+
+        int pageSize = 5;
+        PaginatedListDto<EmployeeDto> employeePage = employeeService.listWithSpecification(0, pageSize);
+        Assertions.assertThat(employeePage.getTotalItems()).isEqualTo(1000);
+        Assertions.assertThat(employeePage.getItems()).hasSize(5);
+        Assertions.assertThat(employeePage.getTotalPages()).isEqualTo(200);
+
+        // OK: n+1 query problem not present
+        Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(0);
+    }
+
+    /**
+     * Specifying a join fetch into the query (e.g. via criteriaBuilder), the problem explained above is solved!
+     */
+    @Test
+    void given1000EmployeesWithAssociatedCompanies_whenTheQueryFetchesExplicitlyViaCriteriaBuilder_thenNPlus1ProblemIsNotPresent(){
+        Session session = entityManager.unwrap(Session.class);
+        Statistics statistics = session.getSessionFactory().getStatistics();
+        statistics.clear();
+
+        int pageSize = 5;
+        PaginatedListDto<EmployeeDto> employeePage = employeeService.listWithCriteriaBuilder(0, pageSize);
+        Assertions.assertThat(employeePage.getTotalItems()).isEqualTo(1000);
+        Assertions.assertThat(employeePage.getItems()).hasSize(5);
+        Assertions.assertThat(employeePage.getTotalPages()).isEqualTo(200);
+
+        // OK: n+1 query problem not present
+        Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
         Assertions.assertThat(statistics.getEntityFetchCount()).isEqualTo(0);
     }
 

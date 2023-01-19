@@ -4,7 +4,9 @@ import it.fabioformosa.jpafetchstudy.converters.Converter;
 import it.fabioformosa.jpafetchstudy.dtos.EmployeeDto;
 import it.fabioformosa.jpafetchstudy.dtos.PaginatedListDto;
 import it.fabioformosa.jpafetchstudy.entitites.Employee;
+import it.fabioformosa.jpafetchstudy.repositories.EmployeeDAO;
 import it.fabioformosa.jpafetchstudy.repositories.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,13 +18,12 @@ import javax.transaction.Transactional;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeDAO employeeDAO;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
 
     static public Specification<Employee> fetchCompanySpecification() {
         return (root, q, cb) -> {
@@ -39,8 +40,14 @@ public class EmployeeService {
         return paginatedListDto;
     }
 
-    public PaginatedListDto<EmployeeDto> listWithCompanySpecification(int pageNum, int pageSize){
+    public PaginatedListDto<EmployeeDto> listWithSpecification(int pageNum, int pageSize){
         Page<Employee> employeePage = employeeRepository.findAll(fetchCompanySpecification(), PageRequest.of(pageNum, pageSize, Sort.by("id")));
+        PaginatedListDto<EmployeeDto> paginatedListDto = Converter.fromPageToPaginatedListDto(employeePage, Converter::fromEmployeeToEmployeeDto);
+        return paginatedListDto;
+    }
+
+    public PaginatedListDto<EmployeeDto> listWithCriteriaBuilder(int pageNum, int pageSize){
+        Page<Employee> employeePage = employeeDAO.listEmployeesWithCompanyByCriteriaBuilder(pageNum, pageSize);
         PaginatedListDto<EmployeeDto> paginatedListDto = Converter.fromPageToPaginatedListDto(employeePage, Converter::fromEmployeeToEmployeeDto);
         return paginatedListDto;
     }
