@@ -22,11 +22,4 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
     )
     Page<Company> findAllWithEmployees(Pageable pageable);
 
-    @EntityGraph(
-            value = "Company.employees",
-            type = EntityGraph.EntityGraphType.LOAD
-    )
-    Page<Company> findAll(Pageable pageable);
-
-
 }
