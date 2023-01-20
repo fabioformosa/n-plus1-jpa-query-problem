@@ -6,6 +6,7 @@ import it.fabioformosa.jpafetchstudy.dtos.PaginatedListDto;
 import it.fabioformosa.jpafetchstudy.entitites.Company;
 import it.fabioformosa.jpafetchstudy.repositories.CompanyDAO;
 import it.fabioformosa.jpafetchstudy.repositories.CompanyRepository;
+import it.fabioformosa.jpafetchstudy.repositories.CompanyRepositoryWithEntityGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import javax.transaction.Transactional;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final CompanyRepositoryWithEntityGraph companyRepositoryWithEntityGraph;
     private final CompanyDAO companyDAO;
 
     private static void printCompanies(PaginatedListDto<CompanyDto> paginatedListDto) {
@@ -57,6 +59,14 @@ public class CompanyService {
 
     public PaginatedListDto<CompanyDto> listWithFetchViaCriteriaBuilder(int pageNum, int pageSize){
         Page<Company> companyPage = companyDAO.listCompanyWithEmployeesViaCriteria(pageNum, pageSize);
+        PaginatedListDto<CompanyDto> paginatedListDto = Converter.fromPageToPaginatedListDto(companyPage, Converter::fromCompanyToCompanyDto);
+        printCompanies(paginatedListDto);
+        return paginatedListDto;
+    }
+
+
+    public PaginatedListDto<CompanyDto> listWithFetchViaEntityGraph(int pageNum, int pageSize){
+        Page<Company> companyPage = companyRepositoryWithEntityGraph.findAll(PageRequest.of(pageNum, pageSize, Sort.by("id")));
         PaginatedListDto<CompanyDto> paginatedListDto = Converter.fromPageToPaginatedListDto(companyPage, Converter::fromCompanyToCompanyDto);
         printCompanies(paginatedListDto);
         return paginatedListDto;

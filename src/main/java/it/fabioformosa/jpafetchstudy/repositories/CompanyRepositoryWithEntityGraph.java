@@ -1,7 +1,6 @@
 package it.fabioformosa.jpafetchstudy.repositories;
 
 import it.fabioformosa.jpafetchstudy.entitites.Company;
-import it.fabioformosa.jpafetchstudy.entitites.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -14,13 +13,7 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
-public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
-
-    @Query(
-            value = "from Company c join fetch c.employees as e",
-            countQuery = "select count(e) from Company e"
-    )
-    Page<Company> findAllWithEmployees(Pageable pageable);
+public interface CompanyRepositoryWithEntityGraph extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
 
     @EntityGraph(
             value = "Company.employees",

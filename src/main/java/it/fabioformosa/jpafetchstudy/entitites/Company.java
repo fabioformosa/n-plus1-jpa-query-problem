@@ -3,12 +3,12 @@ package it.fabioformosa.jpafetchstudy.entitites;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "Company.employees", attributeNodes = { @NamedAttributeNode("employees")})
+})
 @Entity
 @Table(name = "COMPANIES")
 @Data

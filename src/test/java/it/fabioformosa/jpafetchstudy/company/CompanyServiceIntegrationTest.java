@@ -118,4 +118,26 @@ public class CompanyServiceIntegrationTest extends AbstractIntegrationTestSuite 
         Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(0);
     }
 
+
+    /**
+     * Specifying a join fetch into the query, the problem explained above is solved!
+     */
+    @Test
+    void givenCompaniesWithAssociationEmployees_whenTheQueryFetchesExplicitlyViaEntityGraph_thenTheNPlus1QueryProblemIsNotPresent(){
+        Session session = entityManager.unwrap(Session.class);
+        Statistics statistics = session.getSessionFactory().getStatistics();
+        statistics.clear();
+
+        int pageSize = 5;
+        PaginatedListDto<CompanyDto> companyDtoList = companyService.listWithFetchViaEntityGraph(0, pageSize);
+
+        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(10);
+        Assertions.assertThat(companyDtoList.getItems()).hasSize(pageSize);
+        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(2);
+
+        // OK: n+1 query problem not present
+        Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(0);
+    }
+
 }
