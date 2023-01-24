@@ -1,0 +1,33 @@
+<h2>Employee List</h2>
+<p>list of all employees with the their company</p>
+
+<div class="card-container">
+  <div class="card">
+    <div id="employee-grid">
+      <button *ngIf="employees" (click)="refetchSlow()">refresh (n+1 problem)</button> &nbsp;
+      <button *ngIf="employees" (click)="refetchFast()">refresh (performant)</button>
+      <hr/>
+      <table *ngIf="employees">
+        <thead>
+        <tr>
+          <th style="text-align: left">ID</th>
+          <th style="text-align: left">Firstname</th>
+          <th style="text-align: left">Lastname</th>
+          <th style="text-align: left"># Employees</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let employee of employees">
+          <td style="padding-right: 100px;">{{employee.id}}</td>
+          <td style="padding-right: 100px;">{{employee.firstname}}</td>
+          <td style="padding-right: 100px;">{{employee.lastname}}</td>
+          <td>{{employee.companyName}}</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <svg *ngIf="!employees" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_7WDj{transform-origin:center;animation:spinner_PBVY .75s linear infinite}@keyframes spinner_PBVY{100%{transform:rotate(360deg)}}</style><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><circle class="spinner_7WDj" cx="12" cy="2.5" r="1.5"/></svg>
+
+    </div>
+  </div>
+</div>
