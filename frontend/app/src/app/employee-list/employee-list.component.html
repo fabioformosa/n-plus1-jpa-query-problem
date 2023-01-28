@@ -4,16 +4,18 @@
 <div class="card-container">
   <div class="card">
     <div id="employee-grid">
-      <button *ngIf="employees" (click)="refetchSlow()">refresh (n+1 problem)</button> &nbsp;
-      <button *ngIf="employees" (click)="refetchFast()">refresh (performant)</button>
-      <hr/>
+      <div style="display: none">
+        <button *ngIf="employees" (click)="refetchSlow()">refresh (n+1 problem)</button> &nbsp;
+        <button *ngIf="employees" (click)="refetchFast()">refresh (performant)</button>
+        <hr/>
+      </div>
       <table *ngIf="employees">
         <thead>
         <tr>
           <th style="text-align: left">ID</th>
           <th style="text-align: left">Firstname</th>
           <th style="text-align: left">Lastname</th>
-          <th style="text-align: left"># Employees</th>
+          <th style="text-align: left">Company Name</th>
         </tr>
         </thead>
         <tbody>

@@ -11,6 +11,8 @@ import {Observable} from "rxjs";
 export class CompanyListComponent implements OnInit{
 
   companies: Company[] | null
+  totalItems: number;
+  totalPages: number;
 
   constructor(private companyService: CompanyService) {
   }
@@ -21,13 +23,21 @@ export class CompanyListComponent implements OnInit{
 
   private _loadWithNPlus1Problem = () => {
     this.companyService.fetchAllWithNPlus1Problem().subscribe(
-      (paginatedList) =>  this.companies = paginatedList.items
+      (paginatedList) =>  {
+        this.companies = paginatedList.items;
+        this.totalItems = paginatedList.totalItems;
+        this.totalPages = paginatedList.totalPages;
+      }
     );
   }
 
   private _loadWithoutNPlus1Problem = () => {
     this.companyService.fetchAllWithoutNPlus1Problem().subscribe(
-      (paginatedList) =>  this.companies = paginatedList.items
+      (paginatedList) =>  {
+        this.companies = paginatedList.items;
+        this.totalItems = paginatedList.totalItems;
+        this.totalPages = paginatedList.totalPages;
+      }
     );
   }
 
