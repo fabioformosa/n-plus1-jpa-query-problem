@@ -32,7 +32,7 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
      * In the service we iterate over the companies and we access to the related nested collection of employees
      * to convert into DTOs.
      * If we forget to specify explicitly a fetch join in the query, an extra query is done for each company
-     * to load the associated employees
+     * to load the associated employees. In case of FethMode = Subselect, the extra query is done through a subselect
      */
     @Test
     void givenCompaniesWithAssociationEmployees_whenTheFetchTypeIsLazy_thenTheNPlus1QueryProblemIsPresent(){
@@ -49,6 +49,7 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
 
 
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getPrepareStatementCount()).isEqualTo(2);
 
         // OK: n+1 query problem not present: the only 1 expected fetch is for the sub-select
         // but in case of pagination, there is a performance issue in the subquery
@@ -73,6 +74,7 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
 
         // OK: n+1 query problem not present
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getPrepareStatementCount()).isEqualTo(2);
         Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(0);
     }
 
