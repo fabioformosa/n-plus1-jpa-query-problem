@@ -38,9 +38,9 @@ class Company2RepositoryIntegrationTest extends AbstractIntegrationTestSuite {
         statistics.clear();
 
         Page<Company2> companyPage = companyRepository.findAll(PageRequest.of(0, 5, Sort.by("id")));
-        Assertions.assertThat(companyPage.getTotalElements()).isEqualTo(10);
+        Assertions.assertThat(companyPage.getTotalElements()).isEqualTo(1000);
         Assertions.assertThat(companyPage.getContent()).hasSize(5);
-        Assertions.assertThat(companyPage.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(companyPage.getTotalPages()).isEqualTo(200);
 
         // OK: n+1 query problem not present
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);

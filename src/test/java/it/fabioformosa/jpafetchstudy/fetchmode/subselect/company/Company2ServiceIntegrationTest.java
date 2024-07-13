@@ -41,11 +41,13 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
         statistics.clear();
 
         int pageSize = 5;
+        int totalNumOfCompanies = 1000;
+
         PaginatedListDto<CompanyDto> companyDtoList = companyService.list(0, pageSize);
 
-        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(10);
+        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(totalNumOfCompanies);
         Assertions.assertThat(companyDtoList.getItems()).hasSize(pageSize);
-        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(totalNumOfCompanies / pageSize);
 
 
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
@@ -66,11 +68,12 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
         statistics.clear();
 
         int pageSize = 5;
+        int totalNumOfCompanies = 1000;
         PaginatedListDto<CompanyDto> companyDtoList = companyService.listWithFetchViaJQL(0, pageSize);
 
-        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(10);
+        Assertions.assertThat(companyDtoList.getTotalItems()).isEqualTo(totalNumOfCompanies);
         Assertions.assertThat(companyDtoList.getItems()).hasSize(pageSize);
-        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(totalNumOfCompanies / pageSize);
 
         // OK: n+1 query problem not present
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
