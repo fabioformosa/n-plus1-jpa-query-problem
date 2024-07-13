@@ -1,6 +1,8 @@
 package it.fabioformosa.jpafetchstudy.fetchmode.subselect.entities;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 

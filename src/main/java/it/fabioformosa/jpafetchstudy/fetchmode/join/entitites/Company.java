@@ -1,6 +1,7 @@
 package it.fabioformosa.jpafetchstudy.fetchmode.join.entitites;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.List;

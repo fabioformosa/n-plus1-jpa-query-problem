@@ -18,7 +18,7 @@ public class Company2 {
     private String name;
 
     //Collections are lazy fetched by default
-    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy="company")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Employee2> employees;
 }

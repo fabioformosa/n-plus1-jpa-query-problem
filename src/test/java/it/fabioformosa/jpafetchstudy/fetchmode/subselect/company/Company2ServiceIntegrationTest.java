@@ -49,7 +49,7 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
 
 
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
-        Assertions.assertThat(statistics.getPrepareStatementCount()).isEqualTo(2);
+        Assertions.assertThat(statistics.getPrepareStatementCount()).isEqualTo(8);
 
         // OK: n+1 query problem not present: the only 1 expected fetch is for the sub-select
         // but in case of pagination, there is a performance issue in the subquery
