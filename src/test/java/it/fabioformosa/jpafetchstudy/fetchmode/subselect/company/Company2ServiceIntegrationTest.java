@@ -27,13 +27,7 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
     @Autowired
     private EntityManager entityManager;
 
-    /**
-     * By default, the OneToMany association is defined with a fetchType=Lazy.
-     * In the service we iterate over the companies and we access to the related nested collection of employees
-     * to convert into DTOs.
-     * If we forget to specify explicitly a fetch join in the query, an extra query is done for each company
-     * to load the associated employees. In case of FethMode = Subselect, the extra query is done through a subselect
-     */
+
     @Test
     void givenCompaniesWithAssociationEmployees_whenTheFetchTypeIsLazy_thenTheNPlus1QueryProblemIsPresent(){
         Session session = entityManager.unwrap(Session.class);
@@ -50,16 +44,22 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
         Assertions.assertThat(companyDtoList.getTotalPages()).isEqualTo(totalNumOfCompanies / pageSize);
 
 
+        //1 query for counting the total and another query to fetch the first page
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
-        Assertions.assertThat(statistics.getPrepareStatementCount()).isEqualTo(625);
 
-        // OK: n+1 query problem not present: the only 1 expected fetch is for the sub-select
-        // but in case of pagination, there is a performance issue in the subquery
+        // OK: n+1 query problem not present. The whole collection of employees is fetched with one only extra query using the sub-select statement
         Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(1);
+
+        //Nonetheless The subquery comes with a performance issue (yet another n+1 query problem). The subquery fetches the entire table of employees
+        //not only employees linked to the first page of companies. For each employee, hibernate retrieve its company with an extra fetch query,
+        // since the ManyToOne relation with the Company
+        // So it results in hundreds of entity fetched! (in this example, 622 fetches)
+        Assertions.assertThat(statistics.getEntityFetchCount()).isGreaterThan(1);
     }
 
     /**
-     * Specifying a join fetch into the query, the problem explained above is solved!
+     * Specifying a join fetch into the query, the problem explained above is solved because we fetches only the employees linked
+     * to the first page of company
      */
     @Test
     void givenCompaniesWithAssociationEmployees_whenTheQueryFetchesExplicitlyViaJQL_thenTheNPlus1QueryProblemIsNotPresent(){
@@ -77,8 +77,8 @@ public class Company2ServiceIntegrationTest extends AbstractIntegrationTestSuite
 
         // OK: n+1 query problem not present
         Assertions.assertThat(statistics.getQueryExecutionCount()).isEqualTo(2);
-        Assertions.assertThat(statistics.getPrepareStatementCount()).isEqualTo(2);
-        Assertions.assertThat(statistics.getCollectionFetchCount()).isEqualTo(0);
+        Assertions.assertThat(statistics.getCollectionFetchCount()).isZero();
+        Assertions.assertThat(statistics.getEntityFetchCount()).isZero();
     }
 
 }

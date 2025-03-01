@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public class Converter extends AbstractBaseConverter {
 
-    static public CompanyDto fromCompanyToCompanyDto(Company company){
+    public static CompanyDto fromCompanyToCompanyDto(Company company){
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())
