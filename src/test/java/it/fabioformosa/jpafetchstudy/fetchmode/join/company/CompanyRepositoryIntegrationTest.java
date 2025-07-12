@@ -15,9 +15,10 @@ import org.springframework.data.domain.Sort;
 import javax.persistence.EntityManager;
 
 /**
- * The OneToMany association is affected by the n+1 query problem if we have a list of entities (companies) and for each of them
- * we access to the nested collection (employees). This kind of pattern is common, supposing the need to convert the entities in DTOs.
- * An extra query must be performed for each iteration, resulting in the n+1 query problem.
+ * Here we test the JPA Repo built on the entity Company that has a one-to-many association (with Employees) which has fetchType=Lazy
+ * by default. Finding all entities in a paginated we would expect 2 queries: the count query + the query to retrieve the paginated list.
+ * This kind of data retrieval is not affected by n+1 query problem because we don't access to the employees, forcing the lazy loading to perform
+ * extra queries
  */
 class CompanyRepositoryIntegrationTest extends AbstractIntegrationTestSuite {
 
@@ -32,7 +33,7 @@ class CompanyRepositoryIntegrationTest extends AbstractIntegrationTestSuite {
      * If we don't access to the nested collection, no extra queries are performed
      */
     @Test
-    void givenCompaniesWithAssociatedEmployees_whenTheFetchTypeIsLazy_thenTheQueryCounterShouldBe2() {
+    void givenALazyOneToManyAssociation_whenWeDontAccessToTheNestedCollection_thenTheNPlusQueryProblemDoesntOccur() {
         Session session = entityManager.unwrap(Session.class);
         Statistics statistics = session.getSessionFactory().getStatistics();
         statistics.clear();
